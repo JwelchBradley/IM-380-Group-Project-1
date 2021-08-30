@@ -3,8 +3,11 @@
 ###
 [Aa]ssets/AssetStoreTools*
 [Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
 [Ll]ibrary/
 [Ll]ocal[Cc]ache/
+[Mm]emoryCaptures/
 [Oo]bj/
 [Tt]emp/
 [Uu]nityGenerated/
@@ -12,6 +15,7 @@
 sysinfo.txt
 # Unity3D generated meta files
 *.pidb.meta
+![Aa]ssets/**/*.meta
 
 ###
 # VS/MD solution and project files
