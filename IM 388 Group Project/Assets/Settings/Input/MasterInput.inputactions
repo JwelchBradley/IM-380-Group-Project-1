@@ -47,6 +47,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DebugTask",
+                    "type": "Button",
+                    "id": "3d7a6ef4-f2d2-4763-9dc4-12d9ccb33950",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -80,6 +88,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9698a53a-8dc2-4cb6-a2c6-1fa62b5f7eb8",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugTask",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

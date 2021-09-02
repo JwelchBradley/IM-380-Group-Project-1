@@ -60,6 +60,14 @@ public class @MasterInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""DebugTask"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d7a6ef4-f2d2-4763-9dc4-12d9ccb33950"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -95,6 +103,17 @@ public class @MasterInput : IInputActionCollection, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9698a53a-8dc2-4cb6-a2c6-1fa62b5f7eb8"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugTask"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,6 +139,7 @@ public class @MasterInput : IInputActionCollection, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_ShootPlayer = m_Player.FindAction("ShootPlayer", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_DebugTask = m_Player.FindAction("DebugTask", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -204,12 +224,14 @@ public class @MasterInput : IInputActionCollection, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_ShootPlayer;
     private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_DebugTask;
     public struct PlayerActions
     {
         private @MasterInput m_Wrapper;
         public PlayerActions(@MasterInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @ShootPlayer => m_Wrapper.m_Player_ShootPlayer;
         public InputAction @Look => m_Wrapper.m_Player_Look;
+        public InputAction @DebugTask => m_Wrapper.m_Player_DebugTask;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -225,6 +247,9 @@ public class @MasterInput : IInputActionCollection, IDisposable
                 @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @DebugTask.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
+                @DebugTask.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
+                @DebugTask.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -235,6 +260,9 @@ public class @MasterInput : IInputActionCollection, IDisposable
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
+                @DebugTask.started += instance.OnDebugTask;
+                @DebugTask.performed += instance.OnDebugTask;
+                @DebugTask.canceled += instance.OnDebugTask;
             }
         }
     }
@@ -256,5 +284,6 @@ public class @MasterInput : IInputActionCollection, IDisposable
     {
         void OnShootPlayer(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnDebugTask(InputAction.CallbackContext context);
     }
 }

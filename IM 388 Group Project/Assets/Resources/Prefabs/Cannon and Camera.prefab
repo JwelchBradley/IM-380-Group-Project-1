@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2051060819809946601}
   - component: {fileID: 7592326127667706628}
   - component: {fileID: 2493050003464611345}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -673,7 +673,7 @@ GameObject:
   - component: {fileID: 3546614515177695631}
   m_Layer: 3
   m_Name: Cannon
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -706,11 +706,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd0b9a89aeac3214da3886b2fdbeec60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootForce: 100
+  shootForce: 500
   shootPushBackForce: 100
-  shootTorque: 800
-  maxSpeed: 10
-  maxAngularVelocity: 600
+  shootAngularVelocity: 600
+  maxSpeed: 15
+  numCannons: 5
   shootPos: {fileID: 3546614513955301037}
   pivotPos: {fileID: 3546614514795635949}
   cannon: {fileID: 3546614514405620037}
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 24ed9e26a4c39604e80975a1dddd0039, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 1
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -787,8 +787,32 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5f85a334-f9de-43bc-afff-378ca56e371a
+    m_ActionName: Menu/Pause Game[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3546614515177695629}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnShootPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: cc51920c-6859-40b5-b81a-0be710b96553
+    m_ActionName: Player/ShootPlayer[/Mouse/leftButton,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 529e0d2c-bad0-4e29-ba63-87699dde49a7
+    m_ActionName: Player/Look[/Mouse/position]
+  m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
@@ -1048,9 +1072,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6133135116875018853}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cannon and Camera
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1081,7 +1105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8535535872264195962}
   - component: {fileID: 8505465134379792585}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Follow Cam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1125,7 +1149,7 @@ MonoBehaviour:
   m_Follow: {fileID: 3546614513700205022}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5.4
+    OrthographicSize: 10
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0

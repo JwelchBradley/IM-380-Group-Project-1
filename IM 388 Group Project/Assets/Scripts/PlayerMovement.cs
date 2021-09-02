@@ -27,20 +27,34 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     [Tooltip("How much angular momentum is added to the cannon when it is shot")]
     [Range(200, 4000)]
-    private float shootTorque = 800;
+    private float shootAngularVelocity = 800;
     #endregion
 
-    #region Speed Limits
-    [Header("Speed Limits")]
+    #region Limits
+    [Header("Limits")]
     [SerializeField]
     [Tooltip("The max velocity of cannons")]
     [Range(5, 30)]
     private float maxSpeed = 10;
 
     [SerializeField]
-    [Tooltip("The max amount of spin a cannon can have")]
-    [Range(300, 1000)]
-    private float maxAngularVelocity = 600;
+    [Tooltip("The number of cannon that can be fired out of this cannon")]
+    [Range(0, 10)]
+    private int numCannons = 5;
+
+    /// <summary>
+    /// Getter and setter for the temp number of cannons.
+    /// </summary>
+    [HideInInspector]
+    public int NumCannons
+    {
+        get => numCannons;
+
+        set
+        {
+            numCannons = value;
+        }
+    }
     #endregion
 
     #region Shoot Positions
@@ -86,10 +100,39 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private static bool canAim = true;
 
+    public static bool CanAim
+    {
+        get => canAim;
+
+        set
+        {
+            canAim = value;
+        }
+    }
+
     /// <summary>
     /// Allows or disables the cannons ability to shoot.
     /// </summary>
     private bool canShoot = true;
+
+    /// <summary>
+    /// Allows other scripts to disable the cannons ability to shoot.
+    /// </summary>
+    public bool CanShoot
+    {
+        get => canShoot;
+
+        set
+        {
+            canShoot = value;
+        }
+
+    }
+
+    /// <summary>
+    /// Holds true if this is the currently active cannon.
+    /// </summary>
+    private bool isActive = true;
     #endregion
     #endregion
 
@@ -102,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
         currentVCam = transform.parent.gameObject.GetComponentInChildren<CinemachineVirtualCamera>();
         mainCam = Camera.main;
         rb2d = GetComponent<Rigidbody2D>();
+        LookAtCursor(Mouse.current.position.ReadValue());
     }
 
     /// <summary>
@@ -110,7 +154,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         LimitSpeed();
-        LimitAngularVelocity();
     }
 
     /// <summary>
@@ -126,27 +169,22 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Limits the amount of rotation on the player.
-    /// </summary>
-    private void LimitAngularVelocity()
-    {
-        if (rb2d.angularVelocity > maxAngularVelocity)
-        {
-            rb2d.angularVelocity = maxAngularVelocity;
-        }
-    }
-
-    /// <summary>
     /// Aims the cannon.
     /// </summary>
     /// <param name="input">The mouse position.</param>
     public void OnLook(InputValue input)
     {
-        if (canAim)
+        LookAtCursor(input.Get<Vector2>());            
+    }
+
+    /// <summary>
+    /// Calculates the angle the cannon should be.
+    /// </summary>
+    private void LookAtCursor(Vector2 mousePos)
+    {
+        if (canAim && Time.deltaTime != 0)
         {
-            // Calculates the angle the cannon should be
-            Vector2 inputVec = input.Get<Vector2>();
-            Vector3 aimDir = (mainCam.ScreenToWorldPoint(inputVec) - cannon.transform.position).normalized;
+            Vector3 aimDir = (mainCam.ScreenToWorldPoint(mousePos) - cannon.transform.position).normalized;
             float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
 
             cannon.transform.eulerAngles = new Vector3(0, 0, angle);
@@ -158,11 +196,12 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void OnShootPlayer()
     {
-        if (canShoot)
+        if (canShoot && numCannons > 0 && Time.deltaTime != 0)
         {
-            // Disables cannons ability to shoot and aim
+            // Disables cannons ability to shoot, aim, and sets it to be not active
             canShoot = false;
             canAim = false;
+            isActive = false;
 
             //Spawns cannon
             GameObject tempCannon = Instantiate(Resources.Load("Prefabs/Cannon and Camera", typeof(GameObject)), (Vector2)shootPos.transform.position, Quaternion.identity) as GameObject;
@@ -175,10 +214,26 @@ public class PlayerMovement : MonoBehaviour
             // Adds forces to both cannons and changes the current camera
             rb2d.AddForce(-shootDir * shootPushBackForce);
             PlayerMovement tempPM = tempCannon.GetComponentInChildren<PlayerMovement>();
-            tempPM.rb2d.velocity = shootDir * shootForce;
-            tempPM.rb2d.AddTorque(shootTorque);
+            tempPM.rb2d.velocity = rb2d.velocity;
+            tempPM.rb2d.AddForce(shootDir * shootForce);
+            tempPM.rb2d.angularVelocity = shootAngularVelocity;
+
+            // Sets the values the prefab
             tempPM.currentVCam.Priority = currentVCam.Priority + 1;
+            tempPM.NumCannons = numCannons - 1;
+
+            // Disables components
+            GetComponent<PlayerInput>().enabled = false;
         }
+    }
+
+    public void OnDebugTask()
+    {
+        rb2d.velocity = Vector2.zero;
+        rb2d.angularVelocity = 0;
+        canAim = true;
+        transform.rotation = Quaternion.Euler(Vector3.zero);
+        LookAtCursor(Mouse.current.position.ReadValue());
     }
 
     /// <summary>
@@ -187,6 +242,19 @@ public class PlayerMovement : MonoBehaviour
     private void OnBecameInvisible()
     {
         Destroy(transform.parent.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (isActive)
+        {
+            IPlayerInteractable hazardCollision = other.gameObject.GetComponent<IPlayerInteractable>();
+
+            if(hazardCollision != null)
+            {
+                hazardCollision.CollisionEvent(gameObject);
+            }
+        }
     }
     #endregion
 }

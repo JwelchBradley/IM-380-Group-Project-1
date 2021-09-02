@@ -71,6 +71,8 @@ public class MenuBehavior : MonoBehaviour
 
         Time.timeScale = 1;
 
+        PlayerMovement.CanAim = true;
+
         loadOp.allowSceneActivation = true;
     }
 
