@@ -47,3 +47,9 @@ TagManager:
   - name: Player
     uniqueID: 1167065403
     locked: 0
+  - name: Button
+    uniqueID: 1595453215
+    locked: 0
+  - name: Environment
+    uniqueID: 2979264657
+    locked: 0

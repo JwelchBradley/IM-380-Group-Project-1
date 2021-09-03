@@ -36338,8 +36338,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1315702639
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.0022321343, y: 0.0022321343, z: 0}
@@ -36400,7 +36400,7 @@ CompositeCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
@@ -36417,10 +36417,10 @@ CompositeCollider2D:
     - - X: -79977672
         Y: -39977680
       - X: -79977672
-        Y: 39977680
-      - X: 689977664
-        Y: 39977680
-      - X: 689977664
+        Y: 169977680
+      - X: 519977696
+        Y: 169977680
+      - X: 519977696
         Y: -39977680
   m_CompositePaths:
     m_Paths:
@@ -36428,9 +36428,9 @@ CompositeCollider2D:
       - {x: 71.002205, y: 23.002232}
       - {x: -21.002232, y: 23.002203}
       - {x: -21.002203, y: -23.002232}
-    - - {x: 68.997765, y: -3.9977384}
+    - - {x: 51.99777, y: -3.9977384}
       - {x: -7.9977674, y: -3.9977384}
-      - {x: -7.997738, y: 3.9977682}
-      - {x: 68.997765, y: 3.9977384}
+      - {x: -7.997738, y: 16.997768}
+      - {x: 51.99777, y: 16.99774}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005

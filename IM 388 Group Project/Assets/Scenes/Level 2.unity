@@ -140,7 +140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 194864500, guid: 19caab6d02f100b4aa00b494ed49b454, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 100663295
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 3199858785115394041, guid: 19caab6d02f100b4aa00b494ed49b454, type: 3}
       propertyPath: m_Name
@@ -190,9 +190,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3199858786272331821, guid: 19caab6d02f100b4aa00b494ed49b454, type: 3}
-      propertyPath: flagCamWaitTime
-      value: 2
+    - target: {fileID: 3199858786128446215, guid: 19caab6d02f100b4aa00b494ed49b454, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Level 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19caab6d02f100b4aa00b494ed49b454, type: 3}

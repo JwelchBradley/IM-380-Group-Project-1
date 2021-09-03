@@ -9,9 +9,16 @@ using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour
 {
-    [Header("Door Stats")]
-    [Tooltip("Determines if the Door Should open")]
+    /// <summary>
+    /// Holds true if the door should open.
+    /// </summary>
+    [HideInInspector]
     public bool shouldOpen = false;
+
+    [Header("Door Stats")]
+    [SerializeField]
+    [Tooltip("Holds true if the door should move horizontally")]
+    private bool isHorizontal = false;
 
     [SerializeField]
     [Tooltip("How fast the door opens and closes")]
@@ -95,8 +102,24 @@ public class DoorBehaviour : MonoBehaviour
         audio = GetComponent<AudioSource>();
 
         // Initializes move positions
+        FindStartClose();
+    }
+
+    /// <summary>
+    /// Finds the start and close pos for the door.
+    /// </summary>
+    private void FindStartClose()
+    {
         startPos = transform.position;
-        closePos += (Vector2)transform.position + new Vector2(0, bc2d.bounds.size.y);
+
+        if (isHorizontal)
+        {
+            closePos += (Vector2)transform.position + transform.up * new Vector2(bc2d.bounds.size.x, 0);
+        }
+        else
+        {
+            closePos += (Vector2)transform.position + transform.up * new Vector2(0, bc2d.bounds.size.y);
+        }
     }
 
     /// <summary>

@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vcamFlag: {fileID: 0}
-  flagCamWaitTime: 1
+  flagCamWaitTime: 2
   vcamOverview: {fileID: 0}
   overviewWaitTime: 3
