@@ -8,6 +8,7 @@
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -21,12 +22,12 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     [Tooltip("How much force pushes the cannon back when it shoots")]
-    [Range(100, 1000)]
+    [Range(0, 1000)]
     private float shootPushBackForce = 100;
 
     [SerializeField]
     [Tooltip("How much angular momentum is added to the cannon when it is shot")]
-    [Range(200, 4000)]
+    [Range(0, 4000)]
     private float shootAngularVelocity = 800;
     #endregion
 
@@ -34,13 +35,18 @@ public class PlayerMovement : MonoBehaviour
     [Header("Limits")]
     [SerializeField]
     [Tooltip("The max velocity of cannons")]
-    [Range(5, 30)]
+    [Range(0, 30)]
     private float maxSpeed = 10;
 
     [SerializeField]
     [Tooltip("The number of cannon that can be fired out of this cannon")]
     [Range(0, 10)]
     private int numCannons = 5;
+
+    [SerializeField]
+    [Tooltip("Time the player waits after shooting their last cannon")]
+    [Range(0, 10)]
+    private float waitAfterNoCannons = 5;
 
     /// <summary>
     /// Getter and setter for the temp number of cannons.
@@ -92,6 +98,11 @@ public class PlayerMovement : MonoBehaviour
     /// Reference to the main camera in this scene.
     /// </summary>
     private Camera mainCam;
+
+    /// <summary>
+    /// The audiosource of the cannon.
+    /// </summary>
+    private AudioSource aud;
     #endregion
 
     #region Bools
@@ -133,6 +144,16 @@ public class PlayerMovement : MonoBehaviour
     /// Holds true if this is the currently active cannon.
     /// </summary>
     private bool isActive = true;
+
+    private bool hasWon = false;
+
+    public bool HasWon
+    {
+        set
+        {
+            hasWon = value;
+        }
+    }
     #endregion
     #endregion
 
@@ -145,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
         currentVCam = transform.parent.gameObject.GetComponentInChildren<CinemachineVirtualCamera>();
         mainCam = Camera.main;
         rb2d = GetComponent<Rigidbody2D>();
+        aud = GetComponent<AudioSource>();
         LookAtCursor(Mouse.current.position.ReadValue());
     }
 
@@ -222,8 +244,34 @@ public class PlayerMovement : MonoBehaviour
             tempPM.currentVCam.Priority = currentVCam.Priority + 1;
             tempPM.NumCannons = numCannons - 1;
 
+            aud.Play();
+
+            if(numCannons - 1 == 0)
+            {
+                StartCoroutine(RestartLevel());
+            }
+
             // Disables components
             GetComponent<PlayerInput>().enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Calls for the level to be restarted sometime after the last cannon is shot.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RestartLevel()
+    {
+        while(rb2d.velocity.magnitude > 1)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        yield return new WaitForSeconds(waitAfterNoCannons);
+
+        if (!hasWon)
+        {
+            GameObject.Find("Pause Menu Templates Canvas").GetComponent<PauseMenuBehavior>().RestartLevel();
         }
     }
 
@@ -234,14 +282,6 @@ public class PlayerMovement : MonoBehaviour
         canAim = true;
         transform.rotation = Quaternion.Euler(Vector3.zero);
         LookAtCursor(Mouse.current.position.ReadValue());
-    }
-
-    /// <summary>
-    /// Destroys objects once they go off of the screen.
-    /// </summary>
-    private void OnBecameInvisible()
-    {
-        Destroy(transform.parent.gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
