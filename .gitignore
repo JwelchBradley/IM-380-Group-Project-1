@@ -60,3 +60,4 @@ SceneDependencyCache/
 Icon?
 ehthumbs.db
 Thumbs.db
+*.log
