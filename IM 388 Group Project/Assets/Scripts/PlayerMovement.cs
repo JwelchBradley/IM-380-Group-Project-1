@@ -79,6 +79,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     [Tooltip("The cannon part of the heirarchy")]
     private GameObject cannon;
+
+    /// <summary>
+    /// The layer mask of the environment.
+    /// </summary>
+    private LayerMask environmentMask;
     #endregion
 
     #region Components
@@ -139,6 +144,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// Allows the player to reset and aim again from their current spot.
+    /// </summary>
+    private bool canReAim = false;
 
     /// <summary>
     /// Holds true if this is the currently active cannon.
@@ -277,11 +287,25 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnDebugTask()
     {
-        rb2d.velocity = Vector2.zero;
-        rb2d.angularVelocity = 0;
-        canAim = true;
-        transform.rotation = Quaternion.Euler(Vector3.zero);
-        LookAtCursor(Mouse.current.position.ReadValue());
+        if (canReAim)
+        {
+            rb2d.velocity = Vector2.zero;
+            rb2d.angularVelocity = 0;
+            canAim = true;
+            transform.rotation = Quaternion.Euler(Vector3.zero);
+            LookAtCursor(Mouse.current.position.ReadValue());
+
+            canReAim = false;
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, Vector2.down, environmentMask);
+        if(hit != null)
+        {
+            canReAim = true;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
