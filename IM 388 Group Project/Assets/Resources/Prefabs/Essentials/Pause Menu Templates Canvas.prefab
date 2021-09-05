@@ -4303,46 +4303,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<U>Designers</U>
-
-    Jacob Welch
-
-
-    <u>Assets Used</u>
-
-    KennyS
+  m_text: 'Your goal as CanCan is to reach the flag. You can only shoot so many times
+    though so plan accordingly. You can aim while on the ground. You must hit D to
+    start aiming again once you are on the ground.
 
 
-    other
-    stuff
+    Aim - Mouse
 
-    other stuff
+    Shoot -
+    Space or Left Mouse
 
-    other stuff
-
-    other stuff
-
-    other stuff
-
-    other
-    stuff
-
-    other stuff
-
-    other stuff
-
-    other stuff
-
-    other stuff
-
-    other
-    stuff
-
-    other stuff
-
-    other stuff
-
-    other stuff'
+    Reset aim - D'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

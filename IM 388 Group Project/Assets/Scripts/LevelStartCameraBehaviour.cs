@@ -18,9 +18,14 @@ public class LevelStartCameraBehaviour : MonoBehaviour
     [SerializeField]
     private float overviewWaitTime = 1f;
 
+    [SerializeField]
+    private PlayerMovement PM;
+
     // Start is called before the first frame update
     void Awake()
     {
+        PM.CanShoot = false;
+        PlayerMovement.CanAim = false;
         StartCoroutine(CamTransitions());
     }
 
@@ -31,5 +36,7 @@ public class LevelStartCameraBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(overviewWaitTime);
         vcamOverview.m_Priority = 0;
+        PM.CanShoot = true;
+        PlayerMovement.CanAim = true;
     }
 }

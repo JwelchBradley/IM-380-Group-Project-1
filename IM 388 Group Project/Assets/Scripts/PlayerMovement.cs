@@ -48,6 +48,23 @@ public class PlayerMovement : MonoBehaviour
     [Range(0, 10)]
     private float waitAfterNoCannons = 5;
 
+    [Tooltip("How small the player can get")]
+    [SerializeField]
+    private float minSizeScale = 0.25f;
+
+    /// <summary>
+    /// The amount of size change on each shot.
+    /// </summary>
+    private static float sizeChangeAmount = 0;
+
+    public static float SizeChangeAmount
+    {
+        set
+        {
+            sizeChangeAmount = value;
+        }
+    }
+
     /// <summary>
     /// Getter and setter for the temp number of cannons.
     /// </summary>
@@ -79,6 +96,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     [Tooltip("The cannon part of the heirarchy")]
     private GameObject cannon;
+
+    [SerializeField]
+    [Tooltip("The Visuals of the cannon")]
+    private GameObject visuals;
 
     /// <summary>
     /// The layer mask of the environment.
@@ -155,6 +176,9 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private bool isActive = true;
 
+    /// <summary>
+    /// Holds true if the player has won.
+    /// </summary>
     private bool hasWon = false;
 
     public bool HasWon
@@ -177,7 +201,19 @@ public class PlayerMovement : MonoBehaviour
         mainCam = Camera.main;
         rb2d = GetComponent<Rigidbody2D>();
         aud = GetComponent<AudioSource>();
+        environmentMask = LayerMask.GetMask("Environment");
         LookAtCursor(Mouse.current.position.ReadValue());
+
+        FindSizeChanging();
+    }
+
+    private void FindSizeChanging()
+    {
+        if(sizeChangeAmount == 0 && numCannons != 0)
+        {
+            sizeChangeAmount = transform.localScale.x - minSizeScale;
+            sizeChangeAmount /= numCannons;
+        }
     }
 
     /// <summary>
@@ -235,24 +271,7 @@ public class PlayerMovement : MonoBehaviour
             canAim = false;
             isActive = false;
 
-            //Spawns cannon
-            GameObject tempCannon = Instantiate(Resources.Load("Prefabs/Cannon and Camera", typeof(GameObject)), (Vector2)shootPos.transform.position, Quaternion.identity) as GameObject;
-            tempCannon.transform.localScale = transform.parent.transform.localScale / 1.2f;
-
-            // Gets direction cannon should be shot
-            Vector2 shootDir = shootPos.transform.position - pivotPos.transform.position;
-            shootDir.Normalize();
-
-            // Adds forces to both cannons and changes the current camera
-            rb2d.AddForce(-shootDir * shootPushBackForce);
-            PlayerMovement tempPM = tempCannon.GetComponentInChildren<PlayerMovement>();
-            tempPM.rb2d.velocity = rb2d.velocity;
-            tempPM.rb2d.AddForce(shootDir * shootForce);
-            tempPM.rb2d.angularVelocity = shootAngularVelocity;
-
-            // Sets the values the prefab
-            tempPM.currentVCam.Priority = currentVCam.Priority + 1;
-            tempPM.NumCannons = numCannons - 1;
+            ApplyForces();
 
             aud.Play();
 
@@ -266,14 +285,39 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void ApplyForces()
+    {
+        //Spawns cannon
+        GameObject tempCannon = Instantiate(Resources.Load("Prefabs/Cannon and Camera", typeof(GameObject)), (Vector2)shootPos.transform.position, Quaternion.identity) as GameObject;
+        tempCannon.transform.localScale = transform.parent.transform.localScale - new Vector3(sizeChangeAmount, sizeChangeAmount, sizeChangeAmount);
+
+        // Gets direction cannon should be shot
+        Vector2 shootDir = shootPos.transform.position - pivotPos.transform.position;
+        shootDir.Normalize();
+
+        // Adds forces to both cannons and changes the current camera
+        rb2d.AddForce(-shootDir * shootPushBackForce);
+        PlayerMovement tempPM = tempCannon.GetComponentInChildren<PlayerMovement>();
+        tempPM.rb2d.velocity = rb2d.velocity;
+        tempPM.rb2d.AddForce(shootDir * shootForce);
+        tempPM.rb2d.angularVelocity = shootAngularVelocity;
+
+        // Sets the values the prefab
+        tempPM.currentVCam.Priority = currentVCam.Priority + 1;
+        tempPM.NumCannons = numCannons - 1;
+    }
+
     /// <summary>
     /// Calls for the level to be restarted sometime after the last cannon is shot.
     /// </summary>
     /// <returns></returns>
     private IEnumerator RestartLevel()
     {
-        while(rb2d.velocity.magnitude > 1)
+        yield return new WaitForFixedUpdate();
+
+        while(rb2d.velocity.magnitude > 0.000001f)
         {
+            Debug.Log(rb2d.velocity.magnitude);
             yield return new WaitForFixedUpdate();
         }
 
@@ -289,23 +333,38 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canReAim)
         {
-            rb2d.velocity = Vector2.zero;
-            rb2d.angularVelocity = 0;
-            canAim = true;
-            transform.rotation = Quaternion.Euler(Vector3.zero);
-            LookAtCursor(Mouse.current.position.ReadValue());
-
-            canReAim = false;
+            ResetPlayerAim();
         }
+    }
+
+    private void ResetPlayerAim()
+    {
+        rb2d.velocity = Vector2.zero;
+        rb2d.angularVelocity = 0;
+        canAim = true;
+        transform.rotation = Quaternion.Euler(Vector3.zero);
+        LookAtCursor(Mouse.current.position.ReadValue());
+
+        canReAim = false;
     }
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, Vector2.down, environmentMask);
-        if(hit != null)
+        if (!canReAim)
         {
-            canReAim = true;
+            RaycastHit2D hit = Physics2D.Linecast(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * 5, environmentMask);
+            Debug.DrawLine(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * 5);
+
+            if (hit.transform != null)
+            {
+                canReAim = true;
+            }
         }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        canReAim = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

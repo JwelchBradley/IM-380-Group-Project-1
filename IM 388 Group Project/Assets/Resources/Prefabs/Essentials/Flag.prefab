@@ -113,7 +113,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 747784736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -80, y: 0, z: -118.70278}
+  m_LocalPosition: {x: -18.1, y: 0, z: -118.70278}
   m_LocalScale: {x: 2.9675696, y: 2.9675696, z: 2.9675696}
   m_Children:
   - {fileID: 646123474}
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 20
+    OrthographicSize: 16
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -670,6 +670,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Main Menu Templates
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2237853922429926092}
+        m_TargetAssemblyTypeName: MenuBehavior, Assembly-CSharp
+        m_MethodName: DisablePanel
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2237853922575905718}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2237853922061270888
@@ -1379,6 +1391,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Level 2
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2237853922429926092}
+        m_TargetAssemblyTypeName: MenuBehavior, Assembly-CSharp
+        m_MethodName: DisablePanel
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2237853922575905718}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2237853923532554655

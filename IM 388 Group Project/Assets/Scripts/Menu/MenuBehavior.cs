@@ -73,6 +73,8 @@ public class MenuBehavior : MonoBehaviour
 
         PlayerMovement.CanAim = true;
 
+        PlayerMovement.SizeChangeAmount = 0;
+
         loadOp.allowSceneActivation = true;
     }
 

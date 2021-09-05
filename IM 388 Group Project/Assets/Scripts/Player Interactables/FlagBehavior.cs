@@ -9,7 +9,9 @@ public class FlagBehavior : MenuBehavior, IPlayerInteractable
 
     public void CollisionEvent(GameObject other)
     {
-        other.GetComponentInChildren<PlayerMovement>().CanShoot = false;
+        PlayerMovement tempPM = other.GetComponentInChildren<PlayerMovement>();
+        tempPM.CanShoot = false;
+        tempPM.HasWon = true;
         winScreen.SetActive(true);
     }
 }
