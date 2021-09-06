@@ -229,6 +229,16 @@ public class PlayerMovement : MonoBehaviour
         LimitSpeed();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            ShootPlayer();
+        }
+
+        LookAtCursor(Input.mousePosition);
+    }
+
     /// <summary>
     /// Limits how fast the player can move.
     /// </summary>
@@ -247,7 +257,7 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="input">The mouse position.</param>
     public void OnLook(InputValue input)
     {
-        LookAtCursor(input.Get<Vector2>());            
+        //LookAtCursor(input.Get<Vector2>());            
     }
 
     /// <summary>
@@ -269,6 +279,11 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     public void OnShootPlayer()
     {
+
+    }
+
+    private void ShootPlayer()
+    {
         if (canShoot && numCannons > 0 && Time.deltaTime != 0)
         {
             // Disables cannons ability to shoot, aim, and sets it to be not active
@@ -280,7 +295,7 @@ public class PlayerMovement : MonoBehaviour
 
             aud.Play();
 
-            if(numCannons - 1 == 0)
+            if (numCannons - 1 == 0)
             {
                 StartCoroutine(RestartLevel());
             }
