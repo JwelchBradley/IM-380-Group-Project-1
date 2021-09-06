@@ -70,10 +70,9 @@ public class MenuBehavior : MonoBehaviour
         yield return new WaitForSecondsRealtime(crossfadeAnim.GetCurrentAnimatorStateInfo(0).length);
 
         Time.timeScale = 1;
-
         PlayerMovement.CanAim = true;
-
         PlayerMovement.SizeChangeAmount = 0;
+        FlagBehavior.HasWon = false;
 
         loadOp.allowSceneActivation = true;
     }

@@ -9,6 +9,7 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -101,6 +102,13 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("The Visuals of the cannon")]
     private GameObject visuals;
 
+    [SerializeField]
+    [Tooltip("The visuals for the amount of cannons")]
+    private Sprite[] cannonAmountImages;
+
+    [Tooltip("The renderering for the amount of cannons")]
+    public Image cannonAmountImage;
+
     /// <summary>
     /// The layer mask of the environment.
     /// </summary>
@@ -175,19 +183,6 @@ public class PlayerMovement : MonoBehaviour
     /// Holds true if this is the currently active cannon.
     /// </summary>
     private bool isActive = true;
-
-    /// <summary>
-    /// Holds true if the player has won.
-    /// </summary>
-    private bool hasWon = false;
-
-    public bool HasWon
-    {
-        set
-        {
-            hasWon = value;
-        }
-    }
     #endregion
     #endregion
 
@@ -204,7 +199,17 @@ public class PlayerMovement : MonoBehaviour
         environmentMask = LayerMask.GetMask("Environment");
         LookAtCursor(Mouse.current.position.ReadValue());
 
+        UpdateCannonAmountUI();
+
         FindSizeChanging();
+    }
+
+    public void UpdateCannonAmountUI()
+    {
+        if (cannonAmountImage != null)
+        {
+            cannonAmountImage.sprite = cannonAmountImages[numCannons];
+        }
     }
 
     private void FindSizeChanging()
@@ -305,6 +310,8 @@ public class PlayerMovement : MonoBehaviour
         // Sets the values the prefab
         tempPM.currentVCam.Priority = currentVCam.Priority + 1;
         tempPM.NumCannons = numCannons - 1;
+        tempPM.cannonAmountImage = cannonAmountImage;
+        tempPM.UpdateCannonAmountUI();
     }
 
     /// <summary>
@@ -315,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
-        while(rb2d.velocity.magnitude > 0.000001f)
+        while(rb2d.velocity.magnitude > 0.0000001f)
         {
             Debug.Log(rb2d.velocity.magnitude);
             yield return new WaitForFixedUpdate();
@@ -323,7 +330,7 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(waitAfterNoCannons);
 
-        if (!hasWon)
+        if (!FlagBehavior.HasWon)
         {
             GameObject.Find("Pause Menu Templates Canvas").GetComponent<PauseMenuBehavior>().RestartLevel();
         }
@@ -353,7 +360,6 @@ public class PlayerMovement : MonoBehaviour
         if (!canReAim)
         {
             RaycastHit2D hit = Physics2D.Linecast(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * 5, environmentMask);
-            Debug.DrawLine(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * 5);
 
             if (hit.transform != null)
             {

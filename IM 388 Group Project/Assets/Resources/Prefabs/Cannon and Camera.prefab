@@ -792,12 +792,25 @@ MonoBehaviour:
   shootAngularVelocity: 600
   maxSpeed: 15
   numCannons: 5
-  waitAfterNoCannons: 1
+  waitAfterNoCannons: 3
   minSizeScale: 0.4
   shootPos: {fileID: 3546614513955301037}
   pivotPos: {fileID: 3546614514795635949}
   cannon: {fileID: 3546614514405620037}
   visuals: {fileID: 3546614513700205009}
+  cannonAmountImages:
+  - {fileID: 21300000, guid: edc32baf290695044b8a13d8bb10a07a, type: 3}
+  - {fileID: 21300000, guid: edc32baf290695044b8a13d8bb10a07a, type: 3}
+  - {fileID: 21300000, guid: bb3bd03425127804aa31d7fbdf085bb3, type: 3}
+  - {fileID: 21300000, guid: 455f969ce9fd35744bc0d6509c959d15, type: 3}
+  - {fileID: 21300000, guid: 56f9cce1789f36b489068ed0758936f0, type: 3}
+  - {fileID: 21300000, guid: c326786f1f1286f45b797bbbc05f38cb, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  cannonAmountImage: {fileID: 0}
   currentVCam: {fileID: 8505465134379792585}
   rb2d: {fileID: 0}
 --- !u!50 &3546614515177695628
