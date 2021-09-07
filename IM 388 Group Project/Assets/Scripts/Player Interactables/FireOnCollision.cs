@@ -14,7 +14,7 @@ public class FireOnCollision : MonoBehaviour, IPlayerInteractable
         if (canFirePlayer)
         {
             canFirePlayer = false;
-            other.GetComponent<PlayerMovement>().OnShootPlayer();
+            other.GetComponent<PlayerMovement>().ShootPlayer();
             StartCoroutine(AllowFire());
         }
     }

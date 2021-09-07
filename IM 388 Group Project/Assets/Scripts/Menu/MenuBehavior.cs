@@ -19,9 +19,20 @@ public class MenuBehavior : MonoBehaviour
     [SerializeField]
     [Tooltip("Tick true if there is a loading screen")]
     protected bool hasLoadScreen;
+
+    public static bool fromSplash = false;
     #endregion
 
     #region Functions
+    private void Awake()
+    {
+        if (fromSplash)
+        {
+            crossfadeAnim.SetBool("fromSplash", true);
+            fromSplash = false;
+        }
+    }
+
     /// <summary>
     /// Sets a panel to be active.
     /// </summary>

@@ -52,7 +52,7 @@ public class PauseMenuBehavior : MenuBehavior
     public void OnPauseGame()
     {
         // Opens pause menu and pauses the game
-        if (canPause)
+        if (canPause && !FlagBehavior.HasWon)
         {
             isPaused = !isPaused;
             pauseMenu.SetActive(isPaused);

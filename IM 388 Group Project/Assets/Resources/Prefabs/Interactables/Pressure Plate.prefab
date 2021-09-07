@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7293019438691686818}
   - component: {fileID: 488422723}
   - component: {fileID: 488422724}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1595453215
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4565f1e90fbfa9d4da30501168624862, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 7293019438790540700}
   - component: {fileID: 7293019438790540701}
   - component: {fileID: 1248000608}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Pressure Plate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1595453215
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: d6d85b18b82c46e42a1376b0bb72b78d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
