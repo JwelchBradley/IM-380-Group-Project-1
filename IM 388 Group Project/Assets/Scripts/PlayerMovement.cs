@@ -151,13 +151,6 @@ public class PlayerMovement : MonoBehaviour
     private GameObject visuals;
 
     [SerializeField]
-    [Tooltip("The visuals for the amount of cannons")]
-    private Sprite[] cannonAmountImages;
-
-    [Tooltip("The renderering for the amount of cannons")]
-    public Image cannonAmountImage;
-
-    [SerializeField]
     private float groundDist = 3;
 
     [SerializeField]
@@ -187,6 +180,12 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     [HideInInspector]
     public List<GameObject> activeCannons = new List<GameObject>();
+
+    float timeOnGround = 0;
+
+    [SerializeField]
+    [Tooltip("The circles to represent aim direction")]
+    private GameObject aimCircle;
     #endregion
 
     #region Components
@@ -375,7 +374,10 @@ public class PlayerMovement : MonoBehaviour
             Vector3 aimDir = (mainCam.ScreenToWorldPoint(mousePos) - cannon.transform.position).normalized;
             float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
 
-            cannon.transform.eulerAngles = new Vector3(0, 0, angle);
+            if (angle < -150 || angle > -45)
+            {
+                cannon.transform.eulerAngles = new Vector3(0, 0, angle);
+            }
         }
     }
 
@@ -422,25 +424,15 @@ public class PlayerMovement : MonoBehaviour
         // Sets the values the prefab
         tempPM.currentVCam.Priority = currentVCam.Priority + 1;
         tempPM.NumCannons = numCannons - 1;
-        tempPM.cannonAmountImage = cannonAmountImage;
         tempPM.UpdateCannonAmountUI();
         tempPM.activeCannons.AddRange(activeCannons);
+
+        aimCircle.SetActive(false);
 
         // Restarts the level if this is the last cannon
         if (numCannons - 1 == 0)
         {
             StartCoroutine(tempPM.RestartLevel());
-        }
-    }
-
-    /// <summary>
-    /// If d is pressed while on the ground then the player can aim again.
-    /// </summary>
-    public void OnDebugTask()
-    {
-        if (canReAim)
-        {
-            ResetPlayerAim();
         }
     }
 
@@ -456,7 +448,6 @@ public class PlayerMovement : MonoBehaviour
             canAim = true;
             transform.rotation = Quaternion.Euler(Vector3.zero);
             LookAtCursor(Mouse.current.position.ReadValue());
-
             canReAim = false;
         }
     }
@@ -570,7 +561,6 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void WallsCollision()
     {
-        //FindBounceVelocity();
         FindBounceAngularVelocity();
     }
 
@@ -611,8 +601,6 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void FindBounceAngularVelocity()
     {
-        //float spin = rb2d.angularVelocity;
-
         int sign = (int)Mathf.Sign(rb2d.angularVelocity);
 
         if(sign > 0)
@@ -623,20 +611,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb2d.angularVelocity = Mathf.Clamp(rb2d.angularVelocity, -maxAngularVelocity, -minAngularVelocity);
         }
-
-        /*
-        if(spin > maxAngularVelocity)
-        {
-            rb2d.angularVelocity = maxAngularVelocity;
-        }
-        else if(spin < -maxAngularVelocity)
-        {
-            rb2d.angularVelocity = -maxAngularVelocity;
-        }
-        else if(spin < minAngularVelocity && spin > -minAngularVelocity)
-        {
-            rb2d.angularVelocity = minAngularVelocity;
-        }*/
     }
 
     /// <summary>
@@ -645,15 +619,27 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="other"></param>
     private void OnCollisionStay2D(Collision2D other)
     {
+        bool below = CheckBelow();
+
+        if(below)
+        timeOnGround += Time.deltaTime;
+
         if (!canReAim)
         {
-            if (canShoot && CheckBelow())
+            if (canShoot && below)
             {
                 canReAim = true;
             }
             else
             {
                 canReAim = false;
+            }
+        }
+        else
+        {
+            if (timeOnGround > 1 && below && canShoot)
+            {
+                ResetPlayerAim();
             }
         }
     }
@@ -665,6 +651,7 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionExit2D(Collision2D collision)
     {
+        timeOnGround = 0;
         canReAim = false;
     }
 

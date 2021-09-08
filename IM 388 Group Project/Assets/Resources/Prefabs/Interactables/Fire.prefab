@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1183145212}
   - component: {fileID: 1183145213}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 5872044191468178053}
   - component: {fileID: 5872044191468178058}
   - component: {fileID: 4048055671896550158}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
