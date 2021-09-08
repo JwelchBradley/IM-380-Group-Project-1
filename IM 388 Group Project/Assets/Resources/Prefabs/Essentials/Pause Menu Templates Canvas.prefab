@@ -13110,6 +13110,10 @@ MonoBehaviour:
   crossfadeAnim: {fileID: 3055119677918787428}
   hasLoadScreen: 0
   pauseMenu: {fileID: 3055119679210923179}
+  menuPanels:
+  - {fileID: 3055119678412602343}
+  - {fileID: 3055119678374797894}
+  - {fileID: 3055119679703717203}
 --- !u!114 &3055119678992967852
 MonoBehaviour:
   m_ObjectHideFlags: 0
