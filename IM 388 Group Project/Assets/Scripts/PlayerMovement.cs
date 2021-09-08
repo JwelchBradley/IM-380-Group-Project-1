@@ -10,6 +10,8 @@ using Cinemachine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -32,6 +34,33 @@ public class PlayerMovement : MonoBehaviour
     private float shootAngularVelocity = 800;
     #endregion
 
+    #region Bounce Variables
+    [Header("Bounce Variables")]
+    [SerializeField]
+    [Tooltip("The max amount of angular velocity on the cannon after bouncing")]
+    [Range(200, 1000)]
+    private float maxAngularVelocity = 800;
+
+    [SerializeField]
+    [Tooltip("The min amount of angular velocity on the cannon after bouncing")]
+    [Range(0, 600)]
+    private float minAngularVelocity = 400;
+
+    [SerializeField]
+    [Tooltip("How much the cannon bounces up after hitting the ground")]
+    private float groundBounceUpVelocity = 2;
+
+    [SerializeField]
+    [Tooltip("Min amount of bounce off of the walls and cieling")]
+    [Range(0, 10)]
+    private float minBounceVelocity = 2;
+
+    [SerializeField]
+    [Tooltip("Max amount of bounce off of the walls and cieling")]
+    [Range(5, 40)]
+    private float maxBounceVelocity = 15;
+    #endregion
+
     #region Limits
     [Header("Limits")]
     [SerializeField]
@@ -43,6 +72,11 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("The number of cannon that can be fired out of this cannon")]
     [Range(0, 10)]
     private int numCannons = 5;
+
+    /// <summary>
+    /// Holds reference to the starting amount of cannons on this level.
+    /// </summary>
+    private static int levelNumCannons = 0;
 
     [SerializeField]
     [Tooltip("Time the player waits after shooting their last cannon")]
@@ -58,6 +92,9 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private static float sizeChangeAmount = 0;
 
+    /// <summary>
+    /// Allows other scripts to modify the size change amount.
+    /// </summary>
     public static float SizeChangeAmount
     {
         set
@@ -77,6 +114,17 @@ public class PlayerMovement : MonoBehaviour
         set
         {
             numCannons = value;
+        }
+    }
+
+    /// <summary>
+    /// Allows other scripts to modify the number of cannons for this level.
+    /// </summary>
+    public static int LevelNumCannons
+    {
+        set
+        {
+            levelNumCannons = value;
         }
     }
     #endregion
@@ -109,10 +157,36 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("The renderering for the amount of cannons")]
     public Image cannonAmountImage;
 
+    [SerializeField]
+    private float groundDist = 3;
+
+    [SerializeField]
+    [Tooltip("The physics material with friction")]
+    private PhysicsMaterial2D frictionMat;
+
+    [SerializeField]
+    private PolygonCollider2D cannonBarrelCollider;
+
     /// <summary>
     /// The layer mask of the environment.
     /// </summary>
     private LayerMask environmentMask;
+
+    /// <summary>
+    /// The start position of the cannon.
+    /// </summary>
+    private static Vector2 startPos = Vector2.zero;
+
+    /// <summary>
+    /// The starting scale of the cannon.
+    /// </summary>
+    public static float startScale = 0;
+
+    /// <summary>
+    /// A list of the active cannons in the scene.
+    /// </summary>
+    [HideInInspector]
+    public List<GameObject> activeCannons = new List<GameObject>();
     #endregion
 
     #region Components
@@ -137,6 +211,11 @@ public class PlayerMovement : MonoBehaviour
     /// The audiosource of the cannon.
     /// </summary>
     private AudioSource aud;
+
+    /// <summary>
+    /// The TextMeshPro that represents the cannons numCannons.
+    /// </summary>
+    private TextMeshPro tmp;
     #endregion
 
     #region Bools
@@ -145,6 +224,9 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private static bool canAim = true;
 
+    /// <summary>
+    /// Allows other scripts to modify the players ability to aim.
+    /// </summary>
     public static bool CanAim
     {
         get => canAim;
@@ -187,56 +269,73 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region Functions
+    #region Initialize
     /// <summary>
     /// Initializes components.
     /// </summary>
     private void Awake()
     {
+        #region Cannon Components
         currentVCam = transform.parent.gameObject.GetComponentInChildren<CinemachineVirtualCamera>();
         mainCam = Camera.main;
         rb2d = GetComponent<Rigidbody2D>();
         aud = GetComponent<AudioSource>();
+        tmp = gameObject.GetComponentInChildren<TextMeshPro>();
+        #endregion
+
+        #region Cannon Variables
         environmentMask = LayerMask.GetMask("Environment");
-        LookAtCursor(Mouse.current.position.ReadValue());
-
+        activeCannons.Add(gameObject);
         UpdateCannonAmountUI();
-
         FindSizeChanging();
+        FindStartPos();
+        #endregion
     }
 
-    public void UpdateCannonAmountUI()
+    /// <summary>
+    /// Finds the original values of the cannon.
+    /// </summary>
+    private void FindStartPos()
     {
-        if (cannonAmountImage != null)
+        if(startScale == 0)
         {
-            cannonAmountImage.sprite = cannonAmountImages[numCannons];
+            startPos = transform.parent.position;
+            startScale = transform.parent.localScale.x;
+            levelNumCannons = numCannons;
         }
     }
 
+    /// <summary>
+    /// Updates the cannons UI.
+    /// </summary>
+    public void UpdateCannonAmountUI()
+    {
+        if(true)
+        {
+            tmp.text = numCannons.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Finds at what rate the cannon should be changed in scale.
+    /// </summary>
     private void FindSizeChanging()
     {
-        if(sizeChangeAmount == 0 && numCannons != 0)
+        if (sizeChangeAmount == 0 && numCannons != 0)
         {
             sizeChangeAmount = transform.localScale.x - minSizeScale;
             sizeChangeAmount /= numCannons;
         }
     }
+    #endregion
 
+    #region Speed Limit
     /// <summary>
     /// Resets the speed and angular velocity.
     /// </summary>
     private void FixedUpdate()
     {
-        LimitSpeed();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            ShootPlayer();
-        }
-
-        LookAtCursor(Input.mousePosition);
+        //LimitSpeed();
     }
 
     /// <summary>
@@ -250,14 +349,20 @@ public class PlayerMovement : MonoBehaviour
             rb2d.velocity = newVel;
         }
     }
+    #endregion
 
+    #region Aim and Shoot
     /// <summary>
-    /// Aims the cannon.
+    /// Checks if the player wants to shoot and allows them to aim.
     /// </summary>
-    /// <param name="input">The mouse position.</param>
-    public void OnLook(InputValue input)
+    private void Update()
     {
-        //LookAtCursor(input.Get<Vector2>());            
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            ShootPlayer();
+        }
+
+        LookAtCursor(Input.mousePosition);
     }
 
     /// <summary>
@@ -265,7 +370,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void LookAtCursor(Vector2 mousePos)
     {
-        if (canAim && Time.deltaTime != 0)
+        if (canAim && canShoot && Time.deltaTime != 0)
         {
             Vector3 aimDir = (mainCam.ScreenToWorldPoint(mousePos) - cannon.transform.position).normalized;
             float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
@@ -277,12 +382,7 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// If the shoot key is pressed then a new character is shot out.
     /// </summary>
-    public void OnShootPlayer()
-    {
-
-    }
-
-    private void ShootPlayer()
+    public void ShootPlayer()
     {
         if (canShoot && numCannons > 0 && Time.deltaTime != 0)
         {
@@ -295,16 +395,14 @@ public class PlayerMovement : MonoBehaviour
 
             aud.Play();
 
-            if (numCannons - 1 == 0)
-            {
-                StartCoroutine(RestartLevel());
-            }
-
             // Disables components
             GetComponent<PlayerInput>().enabled = false;
         }
     }
 
+    /// <summary>
+    /// Spawns a new cannon and shoots it forward with its new values.
+    /// </summary>
     private void ApplyForces()
     {
         //Spawns cannon
@@ -318,7 +416,6 @@ public class PlayerMovement : MonoBehaviour
         // Adds forces to both cannons and changes the current camera
         rb2d.AddForce(-shootDir * shootPushBackForce);
         PlayerMovement tempPM = tempCannon.GetComponentInChildren<PlayerMovement>();
-        tempPM.rb2d.velocity = rb2d.velocity;
         tempPM.rb2d.AddForce(shootDir * shootForce);
         tempPM.rb2d.angularVelocity = shootAngularVelocity;
 
@@ -327,8 +424,45 @@ public class PlayerMovement : MonoBehaviour
         tempPM.NumCannons = numCannons - 1;
         tempPM.cannonAmountImage = cannonAmountImage;
         tempPM.UpdateCannonAmountUI();
+        tempPM.activeCannons.AddRange(activeCannons);
+
+        // Restarts the level if this is the last cannon
+        if (numCannons - 1 == 0)
+        {
+            StartCoroutine(tempPM.RestartLevel());
+        }
     }
 
+    /// <summary>
+    /// If d is pressed while on the ground then the player can aim again.
+    /// </summary>
+    public void OnDebugTask()
+    {
+        if (canReAim)
+        {
+            ResetPlayerAim();
+        }
+    }
+
+    /// <summary>
+    /// Allows the player to aim again and reset their rotation.
+    /// </summary>
+    private void ResetPlayerAim()
+    {
+        if (canReAim)
+        {
+            rb2d.velocity = Vector2.zero;
+            rb2d.angularVelocity = 0;
+            canAim = true;
+            transform.rotation = Quaternion.Euler(Vector3.zero);
+            LookAtCursor(Mouse.current.position.ReadValue());
+
+            canReAim = false;
+        }
+    }
+    #endregion
+
+    #region Restart Level
     /// <summary>
     /// Calls for the level to be restarted sometime after the last cannon is shot.
     /// </summary>
@@ -339,7 +473,6 @@ public class PlayerMovement : MonoBehaviour
 
         while(rb2d.velocity.magnitude > 0.0000001f)
         {
-            Debug.Log(rb2d.velocity.magnitude);
             yield return new WaitForFixedUpdate();
         }
 
@@ -347,47 +480,188 @@ public class PlayerMovement : MonoBehaviour
 
         if (!FlagBehavior.HasWon)
         {
-            GameObject.Find("Pause Menu Templates Canvas").GetComponent<PauseMenuBehavior>().RestartLevel();
+            Restart();
         }
     }
 
-    public void OnDebugTask()
+    /// <summary>
+    /// Restarts the level.
+    /// </summary>
+    public void Restart()
     {
-        if (canReAim)
-        {
-            ResetPlayerAim();
-        }
-    }
-
-    private void ResetPlayerAim()
-    {
-        rb2d.velocity = Vector2.zero;
-        rb2d.angularVelocity = 0;
+        // Spawns the cannon and sets its values.
+        GameObject tempCannon = Instantiate(Resources.Load("Prefabs/Cannon and Camera", typeof(GameObject)), startPos, Quaternion.identity) as GameObject;
+        PlayerMovement tempPM = tempCannon.GetComponentInChildren<PlayerMovement>();
+        tempPM.NumCannons = levelNumCannons;
+        tempPM.UpdateCannonAmountUI();
+        tempCannon.transform.localScale = new Vector3(startScale, startScale, startScale);
         canAim = true;
-        transform.rotation = Quaternion.Euler(Vector3.zero);
-        LookAtCursor(Mouse.current.position.ReadValue());
 
-        canReAim = false;
+        // Destroys old cannons
+        activeCannons.Remove(gameObject);
+        foreach (GameObject cannon in activeCannons)
+        {
+            Destroy(cannon.transform.parent.gameObject);
+        }
+
+        // Blends back to the original cannon
+        currentVCam.m_Priority = 0;
+
+        // Destroys the cannon and then its camera
+        Destroy(transform.parent.gameObject, 0.5f);
+        Destroy(gameObject);
+    }
+    #endregion
+
+    #region Collision Events
+    /// <summary>
+    /// Checks if the player collide with a wall or the floor.
+    /// </summary>
+    /// <param name="other">The object collided with.</param>
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (CheckBelow())
+        {
+            GroundCollision();
+        }
+        else
+        {
+            WallsCollision();
+        }
     }
 
+    /// <summary>
+    /// Checks if the ground is below.
+    /// </summary>
+    /// <returns></returns>
+    private bool CheckBelow()
+    {
+        RaycastHit2D hit = Physics2D.Linecast(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * groundDist, environmentMask);
+
+        return hit.transform != null;
+    }
+
+    /// <summary>
+    /// Handles the event of colliding with the ground.
+    /// </summary>
+    private void GroundCollision()
+    {
+        if (rb2d.sharedMaterial != frictionMat)
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x, 2);
+        }
+
+        rb2d.sharedMaterial = frictionMat;
+        cannonBarrelCollider.sharedMaterial = frictionMat;
+    }
+
+    /// <summary>
+    /// Handles the event of colliding with a wall.
+    /// </summary>
+    private void WallsCollision()
+    {
+        //FindBounceVelocity();
+        FindBounceAngularVelocity();
+    }
+
+    /// <summary>
+    /// Sets the velocity of the player bouncing off of an object.
+    /// </summary>
+    private void FindBounceVelocity()
+    {
+        int signX = (int)Mathf.Sign(rb2d.velocity.x);
+        int signY = (int)Mathf.Sign(rb2d.velocity.y);
+
+        float xVel = 0;
+        float yVel = 0;
+
+        if(signX > 0)
+        {
+            xVel = Mathf.Clamp(rb2d.velocity.x, minBounceVelocity, maxBounceVelocity);
+        }
+        else
+        {
+            xVel = Mathf.Clamp(rb2d.velocity.x, -maxBounceVelocity, -minBounceVelocity);
+        }
+
+        if(signY > 0)
+        {
+            xVel = Mathf.Clamp(rb2d.velocity.x, minBounceVelocity, maxBounceVelocity);
+        }
+        else
+        {
+            yVel = Mathf.Clamp(rb2d.velocity.y, -maxBounceVelocity, -minBounceVelocity);
+        }
+
+        rb2d.velocity = new Vector2(xVel, yVel);
+    }
+
+    /// <summary>
+    /// Sets the angular velocity of the player bouncing off of a wall.
+    /// </summary>
+    private void FindBounceAngularVelocity()
+    {
+        //float spin = rb2d.angularVelocity;
+
+        int sign = (int)Mathf.Sign(rb2d.angularVelocity);
+
+        if(sign > 0)
+        {
+            rb2d.angularVelocity = Mathf.Clamp(rb2d.angularVelocity, minAngularVelocity, maxAngularVelocity);
+        }
+        else
+        {
+            rb2d.angularVelocity = Mathf.Clamp(rb2d.angularVelocity, -maxAngularVelocity, -minAngularVelocity);
+        }
+
+        /*
+        if(spin > maxAngularVelocity)
+        {
+            rb2d.angularVelocity = maxAngularVelocity;
+        }
+        else if(spin < -maxAngularVelocity)
+        {
+            rb2d.angularVelocity = -maxAngularVelocity;
+        }
+        else if(spin < minAngularVelocity && spin > -minAngularVelocity)
+        {
+            rb2d.angularVelocity = minAngularVelocity;
+        }*/
+    }
+
+    /// <summary>
+    /// Allows the player to reaim if they are on the ground.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnCollisionStay2D(Collision2D other)
     {
         if (!canReAim)
         {
-            RaycastHit2D hit = Physics2D.Linecast(visuals.transform.position, (Vector2)visuals.transform.position + Vector2.down * 5, environmentMask);
-
-            if (hit.transform != null)
+            if (canShoot && CheckBelow())
             {
                 canReAim = true;
+            }
+            else
+            {
+                canReAim = false;
             }
         }
     }
 
+
+    /// <summary>
+    /// Disables the player ability to aim if they leave the ground.
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionExit2D(Collision2D collision)
     {
         canReAim = false;
     }
 
+    /// <summary>
+    /// Calls for collision events when colliding with an interactable.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isActive)
@@ -400,5 +674,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+    #endregion
+
     #endregion
 }
