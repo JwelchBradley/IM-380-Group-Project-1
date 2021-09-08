@@ -41,11 +41,6 @@ public class PressurePlateBehaviour : MonoBehaviour, IPlayerInteractable
     private DoorBehaviour db;
 
     /// <summary>
-    /// Holds true when something is on the pressure plate.
-    /// </summary>
-    private bool onPlate = false;
-
-    /// <summary>
     /// Initializes starting fields.
     /// </summary>
     void Awake()
@@ -57,6 +52,11 @@ public class PressurePlateBehaviour : MonoBehaviour, IPlayerInteractable
         lowestYPos = startingYPos - new Vector2(0, distForStartToLow);
     }
 
+    /// <summary>
+    /// Moves the pressure plate.
+    /// </summary>
+    /// <param name="newPos">The position the plate should move to.</param>
+    /// <returns></returns>
     private IEnumerator MovePlate(Vector2 newPos)
     {
         while ((Vector2)transform.position != lowestYPos)
@@ -70,10 +70,13 @@ public class PressurePlateBehaviour : MonoBehaviour, IPlayerInteractable
         }
     }
 
+    /// <summary>
+    /// The collision event of the player and the plate.
+    /// </summary>
+    /// <param name="other"></param>
     public void CollisionEvent(GameObject other)
     {
         StartCoroutine(MovePlate(lowestYPos));
-        onPlate = true;
 
         db.shouldOpen = true;
     }

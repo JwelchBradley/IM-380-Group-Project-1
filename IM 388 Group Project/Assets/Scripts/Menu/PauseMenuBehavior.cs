@@ -5,9 +5,7 @@
 //
 // Brief Description : Handles the pause menu and allows players to pause the game.
 *****************************************************************************/
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
@@ -39,6 +37,10 @@ public class PauseMenuBehavior : MenuBehavior
         StartCoroutine(WaitFadeIn());
     }
 
+    /// <summary>
+    /// Waits for the level to fade in before allowing the player to pause.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WaitFadeIn()
     {
         yield return new WaitForSeconds(crossfadeAnim.GetCurrentAnimatorStateInfo(0).length);

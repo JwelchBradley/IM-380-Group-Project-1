@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour
 {
+    #region Variables
     /// <summary>
     /// Holds true if the door should open.
     /// </summary>
@@ -33,6 +34,7 @@ public class DoorBehaviour : MonoBehaviour
     [Tooltip("The layers that the door checks beneath itself for")]
     private LayerMask mask;
 
+    /*
     [Header("Sound")]
     [SerializeField]
     [Tooltip("The sound a door makes when opening")]
@@ -51,7 +53,7 @@ public class DoorBehaviour : MonoBehaviour
     [Range(0, 2)]
     [Tooltip("The volume of doorOpenSound")]
     private float doorCloseSoundVolume;
-
+    */
     /// <summary>
     /// Holds true if the door is open.
     /// </summary>
@@ -91,7 +93,9 @@ public class DoorBehaviour : MonoBehaviour
     /// Holds true if an object was beneath it.
     /// </summary>
     private bool hasStopped = false;
+    #endregion
 
+    #region Functions
     /// <summary>
     /// Initializes components and variables.
     /// </summary>
@@ -234,4 +238,5 @@ public class DoorBehaviour : MonoBehaviour
 
         return hit.transform != null;
     }
+    #endregion
 }

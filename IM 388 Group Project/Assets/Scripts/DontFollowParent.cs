@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
+/*****************************************************************************
+// File Name :         DontFollowParent.cs
+// Author :            Jacob Welch
+// Creation Date :     3 September 2021
+//
+// Brief Description : Makes it so that this object doesnt follow the parent.
+*****************************************************************************/
 using UnityEngine;
 
 public class DontFollowParent : MonoBehaviour
 {
-    Vector2 startPos;
+    /// <summary>
+    /// The start position of this object.
+    /// </summary>
+    private Vector2 startPos;
 
-    // Start is called before the first frame update
-    void Awake()
+    /// <summary>
+    /// Finds the start position
+    /// </summary>
+    private void Awake()
     {
         startPos = transform.position;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Keeps the object in its start location.
+    /// </summary>
     void FixedUpdate()
     {
         transform.position = startPos;    

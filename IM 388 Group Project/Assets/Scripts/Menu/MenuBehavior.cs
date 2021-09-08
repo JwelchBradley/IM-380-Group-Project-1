@@ -20,10 +20,18 @@ public class MenuBehavior : MonoBehaviour
     [Tooltip("Tick true if there is a loading screen")]
     protected bool hasLoadScreen;
 
+    /// <summary>
+    /// Holds true if the current scene is the splash screen.
+    /// </summary>
     public static bool fromSplash = false;
     #endregion
 
     #region Functions
+
+    /// <summary>
+    /// The animation is different from splash to main menu and other levels to
+    /// main menu so this handles that event.
+    /// </summary>
     private void Awake()
     {
         if (fromSplash)
@@ -80,12 +88,22 @@ public class MenuBehavior : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(crossfadeAnim.GetCurrentAnimatorStateInfo(0).length);
 
+        RestartVariableResets();
+
+        loadOp.allowSceneActivation = true;
+    }
+
+    /// <summary>
+    /// Resets static variables between level changes.
+    /// </summary>
+    private void RestartVariableResets()
+    {
         Time.timeScale = 1;
         PlayerMovement.CanAim = true;
         PlayerMovement.SizeChangeAmount = 0;
+        PlayerMovement.startScale = 0;
         FlagBehavior.HasWon = false;
-
-        loadOp.allowSceneActivation = true;
+        PlayerMovement.LevelNumCannons = 0;
     }
 
     /// <summary>
