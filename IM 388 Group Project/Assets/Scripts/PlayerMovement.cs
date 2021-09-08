@@ -528,6 +528,16 @@ public class PlayerMovement : MonoBehaviour
         {
             WallsCollision();
         }
+
+        if (isActive)
+        {
+            IPlayerInteractable hazardCollision = other.gameObject.GetComponent<IPlayerInteractable>();
+
+            if (hazardCollision != null)
+            {
+                hazardCollision.CollisionEvent(gameObject);
+            }
+        }
     }
 
     /// <summary>

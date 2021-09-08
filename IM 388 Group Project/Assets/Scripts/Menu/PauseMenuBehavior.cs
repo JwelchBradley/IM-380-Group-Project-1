@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PauseMenuBehavior : MenuBehavior
 {
@@ -26,6 +27,10 @@ public class PauseMenuBehavior : MenuBehavior
     [SerializeField]
     [Tooltip("The pause menu gameobject")]
     private GameObject pauseMenu = null;
+
+    [SerializeField]
+    [Space][Tooltip("The panels that can be activated in the pause menu")]
+    private List<GameObject> menuPanels = new List<GameObject>();
     #endregion
 
     #region Functions
@@ -56,10 +61,26 @@ public class PauseMenuBehavior : MenuBehavior
         // Opens pause menu and pauses the game
         if (canPause && !FlagBehavior.HasWon)
         {
+            if (isPaused)
+            {
+                ResetPauseMenu();
+            }
+
             isPaused = !isPaused;
             pauseMenu.SetActive(isPaused);
             AudioListener.pause = isPaused;
             Time.timeScale = Convert.ToInt32(!isPaused);
+        }
+    }
+
+    /// <summary>
+    /// Disables any panels of the pause menu that may be open.
+    /// </summary>
+    private void ResetPauseMenu()
+    {
+        foreach (GameObject panel in menuPanels)
+        {
+            panel.SetActive(false);
         }
     }
 
