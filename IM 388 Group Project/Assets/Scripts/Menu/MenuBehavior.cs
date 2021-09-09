@@ -80,6 +80,8 @@ public class MenuBehavior : MonoBehaviour
     {
         crossfadeAnim.SetBool("levelEnd", true);
 
+        GameObject.Find("Level Music").GetComponent<AudioSource>().volume = 1;
+
         yield return null;
 
         // Preloads the scene and then loads it after the scene has faded out

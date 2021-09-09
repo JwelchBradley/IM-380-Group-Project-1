@@ -46,7 +46,7 @@ public class @MasterInput : IInputActionCollection, IDisposable
             ""id"": ""2053abdd-8dda-4bb0-8718-dca75bcaead4"",
             ""actions"": [
                 {
-                    ""name"": ""ShootPlayer"",
+                    ""name"": ""SkipSequence"",
                     ""type"": ""Button"",
                     ""id"": ""cc51920c-6859-40b5-b81a-0be710b96553"",
                     ""expectedControlType"": ""Button"",
@@ -62,7 +62,7 @@ public class @MasterInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""DebugTask"",
+                    ""name"": ""RestartLevel"",
                     ""type"": ""Button"",
                     ""id"": ""3d7a6ef4-f2d2-4763-9dc4-12d9ccb33950"",
                     ""expectedControlType"": ""Button"",
@@ -73,23 +73,12 @@ public class @MasterInput : IInputActionCollection, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""0bc97256-e1e9-4be9-b517-71f5f15046f8"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""ShootPlayer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""5ff85c02-a797-4341-82c5-4123389ceb85"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
-                    ""action"": ""ShootPlayer"",
+                    ""action"": ""SkipSequence"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -107,11 +96,11 @@ public class @MasterInput : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9698a53a-8dc2-4cb6-a2c6-1fa62b5f7eb8"",
-                    ""path"": ""<Keyboard>/d"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""DebugTask"",
+                    ""action"": ""RestartLevel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -137,9 +126,9 @@ public class @MasterInput : IInputActionCollection, IDisposable
         m_Menu_PauseGame = m_Menu.FindAction("Pause Game", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_ShootPlayer = m_Player.FindAction("ShootPlayer", throwIfNotFound: true);
+        m_Player_SkipSequence = m_Player.FindAction("SkipSequence", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
-        m_Player_DebugTask = m_Player.FindAction("DebugTask", throwIfNotFound: true);
+        m_Player_RestartLevel = m_Player.FindAction("RestartLevel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -222,16 +211,16 @@ public class @MasterInput : IInputActionCollection, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_ShootPlayer;
+    private readonly InputAction m_Player_SkipSequence;
     private readonly InputAction m_Player_Look;
-    private readonly InputAction m_Player_DebugTask;
+    private readonly InputAction m_Player_RestartLevel;
     public struct PlayerActions
     {
         private @MasterInput m_Wrapper;
         public PlayerActions(@MasterInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @ShootPlayer => m_Wrapper.m_Player_ShootPlayer;
+        public InputAction @SkipSequence => m_Wrapper.m_Player_SkipSequence;
         public InputAction @Look => m_Wrapper.m_Player_Look;
-        public InputAction @DebugTask => m_Wrapper.m_Player_DebugTask;
+        public InputAction @RestartLevel => m_Wrapper.m_Player_RestartLevel;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -241,28 +230,28 @@ public class @MasterInput : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @ShootPlayer.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPlayer;
-                @ShootPlayer.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPlayer;
-                @ShootPlayer.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPlayer;
+                @SkipSequence.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkipSequence;
+                @SkipSequence.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkipSequence;
+                @SkipSequence.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkipSequence;
                 @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
-                @DebugTask.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
-                @DebugTask.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
-                @DebugTask.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDebugTask;
+                @RestartLevel.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRestartLevel;
+                @RestartLevel.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRestartLevel;
+                @RestartLevel.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRestartLevel;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @ShootPlayer.started += instance.OnShootPlayer;
-                @ShootPlayer.performed += instance.OnShootPlayer;
-                @ShootPlayer.canceled += instance.OnShootPlayer;
+                @SkipSequence.started += instance.OnSkipSequence;
+                @SkipSequence.performed += instance.OnSkipSequence;
+                @SkipSequence.canceled += instance.OnSkipSequence;
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
-                @DebugTask.started += instance.OnDebugTask;
-                @DebugTask.performed += instance.OnDebugTask;
-                @DebugTask.canceled += instance.OnDebugTask;
+                @RestartLevel.started += instance.OnRestartLevel;
+                @RestartLevel.performed += instance.OnRestartLevel;
+                @RestartLevel.canceled += instance.OnRestartLevel;
             }
         }
     }
@@ -282,8 +271,8 @@ public class @MasterInput : IInputActionCollection, IDisposable
     }
     public interface IPlayerActions
     {
-        void OnShootPlayer(InputAction.CallbackContext context);
+        void OnSkipSequence(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
-        void OnDebugTask(InputAction.CallbackContext context);
+        void OnRestartLevel(InputAction.CallbackContext context);
     }
 }

@@ -24,6 +24,8 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
     /// </summary>
     private float ropeAnimation = 0;
 
+    private float seatAnimation = 0;
+
     /// <summary>
     /// Holds reference to which direction the animation is currently playing in.
     /// </summary>
@@ -77,22 +79,22 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
         {
             if (ropeAnimation > 0.5f)
             {
-                AnimationUpdate(2, 0.1f, ropeAnimation, 1);
+                AnimationUpdate(ref ropeAnimation, 2, 0.1f, ropeAnimation, 1);
             }
             else
             {
-                AnimationUpdate(0.1f, 2, ropeAnimation, 1);
+                AnimationUpdate(ref ropeAnimation, 0.1f, 2, ropeAnimation, 1);
             }
         }
         else
         {
             if(ropeAnimation > 0.5f)
             {
-                AnimationUpdate(2, 0.1f, ropeAnimation, -1);
+                AnimationUpdate(ref ropeAnimation, 2, 0.1f, ropeAnimation, -1);
             }
             else
             {
-                AnimationUpdate(0.1f, 2, ropeAnimation, -1);
+                AnimationUpdate(ref ropeAnimation, 0.1f, 2, ropeAnimation, -1);
             }
         }
 
@@ -106,6 +108,7 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
         }
 
         transform.position = QuadraticLerp(startPos.transform.position, middlePos.transform.position, endPos.transform.position, ropeAnimation);
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Lerp(-30, 30, ropeAnimation)));
 
         AttachCannon();
     }
@@ -117,9 +120,9 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
     /// <param name="max"></param>
     /// <param name="t"></param>
     /// <param name="dir"></param>
-    private void AnimationUpdate(float min, float max, float t, int dir)
+    private void AnimationUpdate(ref float anim, float min, float max, float t, int dir)
     {
-        ropeAnimation += Time.fixedDeltaTime * Mathf.Lerp(min, max, t) * dir;
+        anim += Time.fixedDeltaTime * Mathf.Lerp(min, max, t) * dir;
     }
 
     /// <summary>

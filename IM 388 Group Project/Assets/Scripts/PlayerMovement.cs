@@ -147,11 +147,18 @@ public class PlayerMovement : MonoBehaviour
     private GameObject cannon;
 
     [SerializeField]
+    [Tooltip("Muzzle effect on the cannon")]
+    private GameObject explosion = null;
+
+    [SerializeField]
     [Tooltip("The Visuals of the cannon")]
     private GameObject visuals;
 
     [SerializeField]
     private float groundDist = 3;
+
+    [SerializeField]
+    private AudioSource collideAudio;
 
     [SerializeField]
     [Tooltip("The physics material with friction")]
@@ -374,9 +381,19 @@ public class PlayerMovement : MonoBehaviour
             Vector3 aimDir = (mainCam.ScreenToWorldPoint(mousePos) - cannon.transform.position).normalized;
             float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
 
-            if (angle < -150 || angle > -45)
+            if(angle < -45)
+            {
+                angle *= -1;
+                angle = 360 - angle;
+            }
+
+            if (angle < 210)
             {
                 cannon.transform.eulerAngles = new Vector3(0, 0, angle);
+                /*
+                angle += 45;
+                angle /= 360f;
+                currentVCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenX = angle;*/
             }
         }
     }
@@ -410,6 +427,10 @@ public class PlayerMovement : MonoBehaviour
         //Spawns cannon
         GameObject tempCannon = Instantiate(Resources.Load("Prefabs/Cannon and Camera", typeof(GameObject)), (Vector2)shootPos.transform.position, Quaternion.identity) as GameObject;
         tempCannon.transform.localScale = transform.parent.transform.localScale - new Vector3(sizeChangeAmount, sizeChangeAmount, sizeChangeAmount);
+
+        // Spawns explosion
+        GameObject explosion = Instantiate(this.explosion, shootPos.transform.position, Quaternion.identity);
+        explosion.transform.parent = shootPos.transform;
 
         // Gets direction cannon should be shot
         Vector2 shootDir = shootPos.transform.position - pivotPos.transform.position;
@@ -475,6 +496,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnRestartLevel()
+    {
+        if(levelNumCannons != numCannons)
+        {
+            if (canShoot || numCannons == 0)
+            {
+                Restart();
+            }
+        }
+    }
+
     /// <summary>
     /// Restarts the level.
     /// </summary>
@@ -511,6 +543,11 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="other">The object collided with.</param>
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if (canShoot)
+        {
+            collideAudio.Play();
+        }
+
         if (CheckBelow())
         {
             GroundCollision();

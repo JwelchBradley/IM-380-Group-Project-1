@@ -6,7 +6,6 @@
 // Brief Description : Carrys the level music between scenes.
 *****************************************************************************/
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DontDestroyMusic : MonoBehaviour
 {
@@ -15,10 +14,7 @@ public class DontDestroyMusic : MonoBehaviour
     /// </summary>
     private static GameObject music;
 
-    /// <summary>
-    /// Checks if there is a music object already in the scene.
-    /// </summary>
-    void Awake()
+    private void Awake()
     {
         if (music == null)
         {
@@ -27,18 +23,16 @@ public class DontDestroyMusic : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
-        }
-    }
-
-    /// <summary>
-    /// Destroys the music on the main menu level.
-    /// </summary>
-    private void Update()
-    {
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByBuildIndex(0))
-        {
-            //Destroy(gameObject);
+            if (gameObject.name == music.name)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(music);
+                music = gameObject;
+                DontDestroyOnLoad(gameObject);
+            }
         }
     }
 }
