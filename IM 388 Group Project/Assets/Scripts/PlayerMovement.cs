@@ -32,6 +32,11 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("How much angular momentum is added to the cannon when it is shot")]
     [Range(0, 4000)]
     private float shootAngularVelocity = 800;
+
+    [SerializeField]
+    [Tooltip("The intenisty of the camera shake")]
+    [Range(0,10)]
+    private float shootCameraShake = 1;
     #endregion
 
     #region Bounce Variables
@@ -390,10 +395,13 @@ public class PlayerMovement : MonoBehaviour
             if (angle < 210)
             {
                 cannon.transform.eulerAngles = new Vector3(0, 0, angle);
-                /*
+                
                 angle += 45;
                 angle /= 360f;
-                currentVCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenX = angle;*/
+                angle = Mathf.Clamp(angle, 0.3f, 0.6f);
+                CinemachineFramingTransposer frameTransposer = currentVCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+                frameTransposer.m_ScreenX = angle;
+                frameTransposer.m_ScreenY = 0.7f;
             }
         }
     }
@@ -450,10 +458,26 @@ public class PlayerMovement : MonoBehaviour
 
         aimCircle.SetActive(false);
 
+        tempPM.StartCoroutine(ShakeCamera());
+
         // Restarts the level if this is the last cannon
         if (numCannons - 1 == 0)
         {
             StartCoroutine(tempPM.RestartLevel());
+        }
+    }
+
+    public IEnumerator ShakeCamera()
+    {
+        CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = currentVCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        float timer = 0;
+        float intensity = shootCameraShake;
+
+        while(timer < 0.6f)
+        {
+            cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = Mathf.Lerp(intensity, 0, timer);
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -545,7 +569,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canShoot)
         {
-            collideAudio.Play();
+            //collideAudio.Play();
         }
 
         if (CheckBelow())

@@ -120,15 +120,15 @@ AudioMixerController:
   - guid: 3b4b440b823f63d4cb2c9773a436c37b
     name: GameplayMusicVolume
   - guid: c67eb5f35fc005049a9b54838b0f687c
-    name: MasterVolume
+    name: masterVolume
   - guid: 9bd2def4bb1536042b5311ae2a6b93a2
     name: MenuMusicVolume
   - guid: 376788c2bf2c7da45bf8a584e2b9a10f
-    name: MusicVolume
+    name: musicVolume
   - guid: b5361272321b7114cad32a409211b545
-    name: SFXVolume
+    name: sfxVolume
   - guid: fafcc8a2c15ce5249a8ceed3c2dfbc60
-    name: UIVolume
+    name: uiVolume
   m_AudioMixerGroupViews:
   - guids:
     - d5cf82b73121ef74caf7798cd0752743

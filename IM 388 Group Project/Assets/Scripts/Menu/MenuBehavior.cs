@@ -80,7 +80,12 @@ public class MenuBehavior : MonoBehaviour
     {
         crossfadeAnim.SetBool("levelEnd", true);
 
-        GameObject.Find("Level Music").GetComponent<AudioSource>().volume = 1;
+        int buildIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (buildIndex != 0 && buildIndex != 1)
+        {
+            GameObject.Find("Level Music").GetComponent<AudioSource>().volume = 1;
+        }
 
         yield return null;
 
