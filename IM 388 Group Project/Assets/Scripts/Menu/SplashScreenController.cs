@@ -53,7 +53,7 @@ public class SplashScreenController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator SkipSplash()
     {
-        vp.frame = 166;
+        vp.frame = 164;
 
         yield return new WaitForFixedUpdate();
 
@@ -70,6 +70,13 @@ public class SplashScreenController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && MenuBehavior.fromSplash)
         {
             StartCoroutine(SkipSplash());
+        }
+
+        if(SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            vp.frame = 167;
+
+            Destroy(gameObject, 1);
         }
     }
 }

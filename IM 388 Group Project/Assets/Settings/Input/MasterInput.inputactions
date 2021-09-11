@@ -33,7 +33,7 @@
             "id": "2053abdd-8dda-4bb0-8718-dca75bcaead4",
             "actions": [
                 {
-                    "name": "ShootPlayer",
+                    "name": "SkipSequence",
                     "type": "Button",
                     "id": "cc51920c-6859-40b5-b81a-0be710b96553",
                     "expectedControlType": "Button",
@@ -49,7 +49,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "DebugTask",
+                    "name": "RestartLevel",
                     "type": "Button",
                     "id": "3d7a6ef4-f2d2-4763-9dc4-12d9ccb33950",
                     "expectedControlType": "Button",
@@ -60,23 +60,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "0bc97256-e1e9-4be9-b517-71f5f15046f8",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "ShootPlayer",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5ff85c02-a797-4341-82c5-4123389ceb85",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "ShootPlayer",
+                    "action": "SkipSequence",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -94,11 +83,11 @@
                 {
                     "name": "",
                     "id": "9698a53a-8dc2-4cb6-a2c6-1fa62b5f7eb8",
-                    "path": "<Keyboard>/d",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DebugTask",
+                    "action": "RestartLevel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

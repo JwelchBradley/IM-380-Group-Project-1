@@ -33,6 +33,8 @@ public class LevelStartCameraBehaviour : MonoBehaviour
     [Tooltip("The playermovement script of the player")]
     private PlayerMovement PM;
 
+    private bool hasPlayed = false;
+
     /// <summary>
     /// Initializes values and starts transitions.
     /// </summary>
@@ -41,6 +43,51 @@ public class LevelStartCameraBehaviour : MonoBehaviour
         PM.CanShoot = false;
         PlayerMovement.CanAim = false;
         StartCoroutine(CamTransitions());
+        ChangeTransitionTime(1, 2);
+    }
+
+    public void OnSkipSequence()
+    {
+        //Play();
+    }
+
+    private void Play()
+    {
+        if (!hasPlayed)
+        {
+            vcamOverview.m_Priority = 0;
+            PM.CanShoot = true;
+            PlayerMovement.CanAim = true;
+            hasPlayed = true;
+        }
+        /*
+        else if(vcamOverview.m_Priority == 0)
+        {
+             ChangeTransitionTime(1, 0.5f);
+            //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerMovement>().activeCannons.Count = false;
+            vcamOverview.m_Priority = 100;
+        }
+        else
+        {
+            //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerMovement>().CanShoot = true;
+            vcamOverview.m_Priority = 0;
+        }*/
+    }
+
+    private void FixedUpdate()
+    {
+        if(vcamOverview.m_Priority == 100)
+        {
+            PM.CanShoot = false;
+        }
+    }
+
+    private void ChangeTransitionTime(int blend, float duration)
+    {
+        CinemachineBlendDefinition def = new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.EaseIn, duration);
+        def.m_Time = duration;
+        Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend = def;
+        Camera.main.GetComponent<CinemachineBrain>().m_CustomBlends.m_CustomBlends[blend].m_Blend = def;
     }
 
     /// <summary>
@@ -54,7 +101,8 @@ public class LevelStartCameraBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(overviewWaitTime);
         vcamOverview.m_Priority = 0;
-        PM.CanShoot = true;
-        PlayerMovement.CanAim = true;
+
+        yield return new WaitForSeconds(2);
+        Play();
     }
 }
