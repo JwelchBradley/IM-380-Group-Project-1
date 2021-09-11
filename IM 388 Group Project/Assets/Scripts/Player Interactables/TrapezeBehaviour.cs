@@ -24,8 +24,6 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
     /// </summary>
     private float ropeAnimation = 0;
 
-    private float seatAnimation = 0;
-
     /// <summary>
     /// Holds reference to which direction the animation is currently playing in.
     /// </summary>
@@ -60,13 +58,18 @@ public class TrapezeBehaviour : MonoBehaviour, IPlayerInteractable
     {
         if(attachedCannon == null)
         {
-            attachedCannon = other;
-            Rigidbody2D rb2d = other.GetComponent<Rigidbody2D>();
-            rb2d.angularVelocity = 0;
-            other.transform.rotation = Quaternion.Euler(Vector3.zero);         
-            rb2d.isKinematic = true;
+            PlayerMovement pm = other.GetComponent<PlayerMovement>();
 
-            PlayerMovement.CanAim = true;
+            if(pm != null && pm.NumCannons != 0)
+            {
+                attachedCannon = other;
+                Rigidbody2D rb2d = other.GetComponent<Rigidbody2D>();
+                rb2d.angularVelocity = 0;
+                other.transform.rotation = Quaternion.Euler(Vector3.zero);
+                rb2d.isKinematic = true;
+
+                PlayerMovement.CanAim = true;
+            }
         }
     }
 

@@ -146,7 +146,7 @@ public class DoorBehaviour : MonoBehaviour
     /// </summary>
     private void OpenDoor()
     {
-        MoveDoor(closePos);
+        MoveDoor(closePos, moveSpeed);
 
         if (!isOpen)
         {
@@ -167,7 +167,7 @@ public class DoorBehaviour : MonoBehaviour
                 audio.Play();
             }
 
-            MoveDoor(startPos);
+            MoveDoor(startPos, moveSpeed * 3);
         }
         else
         {
@@ -193,7 +193,7 @@ public class DoorBehaviour : MonoBehaviour
     /// The door is moved to newPos.
     /// </summary>
     /// <param name="newPos">The position the door is moved to.</param>
-    private void MoveDoor(Vector2 newPos)
+    private void MoveDoor(Vector2 newPos, float moveSpeed)
     {
         Vector3 pos = Vector2.MoveTowards(transform.position,
                                           newPos,

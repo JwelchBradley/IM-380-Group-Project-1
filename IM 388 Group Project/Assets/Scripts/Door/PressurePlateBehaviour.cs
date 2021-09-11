@@ -59,7 +59,7 @@ public class PressurePlateBehaviour : MonoBehaviour, IPlayerInteractable
     /// <returns></returns>
     private IEnumerator MovePlate(Vector2 newPos)
     {
-        while ((Vector2)transform.position != lowestYPos)
+        while ((Vector2)transform.position != newPos)
         {
             Vector2 pos = Vector2.MoveTowards(transform.position,
                                               newPos,
@@ -68,6 +68,13 @@ public class PressurePlateBehaviour : MonoBehaviour, IPlayerInteractable
             transform.position = pos;
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        StartCoroutine(MovePlate(startingYPos));
+        db.shouldOpen = false;
     }
 
     /// <summary>

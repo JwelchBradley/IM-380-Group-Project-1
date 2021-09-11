@@ -34,7 +34,7 @@ public class SliderBehaviour : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetFloat(volVariableName, 10);
+            PlayerPrefs.SetFloat(volVariableName, 1);
         }
 
         SetVolume(PlayerPrefs.GetFloat(volVariableName));

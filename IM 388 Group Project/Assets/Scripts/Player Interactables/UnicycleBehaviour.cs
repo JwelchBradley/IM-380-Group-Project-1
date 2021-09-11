@@ -28,14 +28,14 @@ public class UnicycleBehaviour : MonoBehaviour
     /// </summary>
     private bool forwardOrder = true;
 
-    private SpriteRenderer sr;
+    [SerializeField]
+    private SpriteRenderer[] sr;
 
     /// <summary>
     /// Starts the moving process.
     /// </summary>
     void Awake()
     {
-        sr = GetComponent<SpriteRenderer>();
         StartCoroutine(SawRoutine());
     }
 
@@ -71,16 +71,26 @@ public class UnicycleBehaviour : MonoBehaviour
         {
             if (!forwardOrder)
             {
-                sr.flipX = true;
+                ChangeSpriteDirection();
+
                 forwardOrder = true;
                 currentMovePos = 0;
             }
             else
             {
-                sr.flipX = false;
+                ChangeSpriteDirection();
+
                 forwardOrder = false;
                 currentMovePos = 1;
             }
+        }
+    }
+
+    private void ChangeSpriteDirection()
+    {
+        foreach (SpriteRenderer sprite in sr)
+        {
+            sprite.flipX = !sprite.flipX;
         }
     }
 

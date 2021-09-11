@@ -198,6 +198,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     [Tooltip("The circles to represent aim direction")]
     private GameObject aimCircle;
+
+    /// <summary>
+    /// The button object in the scene.
+    /// </summary>
+    private GameObject button;
     #endregion
 
     #region Components
@@ -292,6 +297,8 @@ public class PlayerMovement : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         aud = GetComponent<AudioSource>();
         tmp = gameObject.GetComponentInChildren<TextMeshPro>();
+
+        button = GameObject.Find("Pressure Plate");
         #endregion
 
         #region Cannon Variables
@@ -324,6 +331,7 @@ public class PlayerMovement : MonoBehaviour
         if(true)
         {
             tmp.text = numCannons.ToString();
+            tmp.sortingOrder = 10-numCannons;
         }
     }
 
@@ -544,6 +552,11 @@ public class PlayerMovement : MonoBehaviour
         tempCannon.transform.localScale = new Vector3(startScale, startScale, startScale);
         canAim = true;
 
+        if(button != null)
+        {
+            ResetButton();
+        }
+
         // Destroys old cannons
         activeCannons.Remove(gameObject);
         foreach (GameObject cannon in activeCannons)
@@ -557,6 +570,11 @@ public class PlayerMovement : MonoBehaviour
         // Destroys the cannon and then its camera
         Destroy(transform.parent.gameObject, 0.5f);
         Destroy(gameObject);
+    }
+
+    private void ResetButton()
+    {
+        button.GetComponent<PressurePlateBehaviour>().Reset();
     }
     #endregion
 
