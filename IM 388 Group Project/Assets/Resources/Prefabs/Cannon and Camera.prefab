@@ -936,10 +936,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootForce: 500
   shootPushBackForce: 100
+<<<<<<< HEAD
+  shootAngularVelocity: 400
+  maxAngularVelocity: 600
+  minAngularVelocity: 300
+=======
   shootAngularVelocity: 600
   shootCameraShake: 10
   maxAngularVelocity: 800
   minAngularVelocity: 400
+>>>>>>> 2832ca3efd5b09a190b65f45d0132d832a7b429e
   groundBounceUpVelocity: 2
   minBounceVelocity: 2
   maxBounceVelocity: 15
@@ -1503,7 +1509,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 2.2152915, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
