@@ -937,7 +937,10 @@ MonoBehaviour:
   shootForce: 500
   shootPushBackForce: 100
   shootAngularVelocity: 600
+<<<<<<< HEAD
   shootCameraShake: 10
+=======
+>>>>>>> parent of defc52c (Changed Level 2 and Cannon firing)
   maxAngularVelocity: 800
   minAngularVelocity: 400
   groundBounceUpVelocity: 2
