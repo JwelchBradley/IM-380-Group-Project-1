@@ -3,6 +3,7 @@ Cmd: initializeCompiler
 
 <<<<<<< Updated upstream
 Cmd: shutdown
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 Cmd: compileSnippet
@@ -136,3 +137,5 @@ Cmd: compileSnippet
 
 Quitting shader compiler process
 >>>>>>> 2832ca3efd5b09a190b65f45d0132d832a7b429e
+=======
+>>>>>>> Stashed changes
